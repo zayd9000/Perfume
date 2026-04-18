@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Fragrance Truth | @zayd90000</title>
     <style>
-        /* Minimalist & Cinematic "Paper" Aesthetic */
         :root {
             --bg-color: #f4f1ea; 
             --accent: #1a1a1a;
@@ -23,57 +22,51 @@
             align-items: center;
             padding: 40px 20px;
             margin: 0;
-            line-height: 1.6;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin: 0;
-            font-weight: bold;
-        }
-
-        .handle {
-            font-size: 1rem;
-            letter-spacing: 2px;
-            opacity: 0.6;
-            margin-top: 10px;
-        }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 1.4rem; letter-spacing: 3px; text-transform: uppercase; margin: 0; font-weight: bold; }
+        .handle { font-size: 0.9rem; letter-spacing: 2px; opacity: 0.6; margin-top: 8px; }
 
         .container {
             width: 100%;
-            max-width: 550px;
+            max-width: 500px;
             background: var(--card-bg);
-            padding: 35px;
-            box-shadow: 15px 15px 0px rgba(0,0,0,0.03);
+            padding: 30px;
+            box-shadow: 12px 12px 0px rgba(0,0,0,0.03);
             border: 1px solid #e8e4d9;
             box-sizing: border-box;
         }
 
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-
-        input, select {
+        label { display: block; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
+        
+        input {
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             border: 1px solid #ddd;
-            box-sizing: border-box;
             margin-bottom: 15px;
             font-family: inherit;
-            font-size: 1rem;
             background: #fafafa;
+        }
+
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        
+        #preview-container {
+            margin-top: 15px;
+            display: none;
+            text-align: center;
+        }
+        #imagePreview {
+            max-width: 100%;
+            height: auto;
+            border: 10px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         button {
@@ -84,178 +77,148 @@
             border: none;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 2px;
             font-weight: bold;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            opacity: 0.8;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
         }
 
         .result-box {
             margin-top: 20px;
             padding: 20px;
-            border: 1px dashed #ccc;
+            border: 1px solid #eee;
             display: none;
-            font-size: 0.95rem;
-            background: #fdfdfd;
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
 
-        .warning { color: var(--danger); font-weight: bold; border-color: var(--danger) !important; }
-        .success { color: #2e7d32; font-weight: bold; }
-
-        .perf-tag {
-            display: inline-block;
-            background: #eee;
-            padding: 4px 10px;
+        .fact-check {
+            background: #fff9f9;
+            padding: 10px;
+            border-left: 3px solid var(--danger);
             font-size: 0.75rem;
-            margin: 5px 5px 0 0;
+            margin: 15px 0;
+        }
+
+        .perf-detail {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 5px;
+        }
+
+        .disclaimer {
+            font-size: 0.65rem;
+            color: #999;
+            text-align: center;
+            margin-top: 25px;
+            line-height: 1.4;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        hr { border: 0; border-top: 1px solid #eee; margin: 40px 0; }
-
-        .checklist-item {
-            margin-bottom: 12px;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .checklist-item::before {
-            content: "×";
-            position: absolute;
-            left: 0;
-            color: var(--danger);
-            font-weight: bold;
-        }
+        hr { border: 0; border-top: 1px solid #eee; margin: 30px 0; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>We all deserve to know the truth</h1>
+        <h1>WE ALL DESERVE TO KNOW THE TRUTH</h1>
         <div class="handle">@zayd90000</div>
     </header>
 
     <div class="container">
-        <label>Step 1: The Batch Analysis</label>
+        <label>Visual Evidence (Upload Photo)</label>
+        <div class="upload-area" onclick="document.getElementById('imageInput').click()">
+            <span>Tap to upload bottle or box photo</span>
+            <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="previewImage(event)">
+        </div>
+        <div id="preview-container">
+            <img id="imagePreview" src="#" alt="Bottle Preview">
+        </div>
+
+        <hr>
+
+        <label>Verification Lab</label>
         <input type="text" id="barcodeInput" placeholder="Enter Batch Code (e.g. 38YN908)">
-        <button onclick="checkBatch()">Scan Database</button>
-        <div id="batchResult" class="result-box"></div>
+        <button onclick="checkTruth()">Analyze Authenticity</button>
+        <div id="result" class="result-box"></div>
 
         <hr>
 
-        <label>Step 2: Physical Red Flags</label>
-        <select id="brandSelect" onchange="showHardwareCheck()">
-            <option value="">Select Brand for Hardware Check...</option>
-            <option value="armani">Armani</option>
-            <option value="ysl">YSL (Yves Saint Laurent)</option>
-            <option value="dior">Dior</option>
-            <option value="jpg">Jean Paul Gaultier</option>
-            <option value="margiela">Maison Margiela</option>
-        </select>
-        <div id="hardwareResult" class="result-box"></div>
+        <label>Performance & Notes Guide</label>
+        <input type="text" id="scentSearch" placeholder="Search perfume name...">
+        <button onclick="searchScent()">Get Scent Data</button>
+        <div id="guide-result" class="result-box"></div>
 
-        <hr>
+        <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+            <label>Master Fake List</label>
+            <p style="font-size: 0.75rem;">Known Counterfeit Codes: <br>
+                <span style="color:var(--danger); font-weight:bold;">38YN908 | 562112 | 10L11CJ | 22U11CR</span>
+            </p>
+            <div class="fact-check">
+                <strong>HARDWARE TIP:</strong> Real Armani Stronger With You bottles have BLANK sprayers. If yours has an eagle logo, it is a fake using mismatched parts from other bottles.
+            </div>
+        </div>
 
-        <label>Step 3: Performance & Notes</label>
-        <input type="text" id="scentSearch" placeholder="Search Fragrance Name...">
-        <button onclick="searchScent()">Check Performance</button>
-        <div id="guideResult" class="result-box"></div>
+        <div class="disclaimer">
+            This tool is a community guide. Always purchase from authorized retailers to guarantee authenticity.
+        </div>
     </div>
 
     <script>
-        // DATA: FAKE CODES
-        const knownFakeCodes = ["38YN908", "562112"];
-
-        // DATA: HARDWARE RED FLAGS
-        const hardwareData = {
-            "armani": [
-                "Real bottles of SWY Intensely have BLANK sprayers. Fakes often have an eagle logo.",
-                "The cap should be heavy metal. If it feels like light plastic, it's a clone.",
-                "Check the text spacing on the bottom of the bottle. Fakes are often crowded."
-            ],
-            "ysl": [
-                "The 'Dip Tube' (straw) must be nearly invisible. Thick white tubes are 100% fake.",
-                "Glass base must be crystal clear. 'Wavy' or uneven glass is a sign of cheap manufacturing.",
-                "YSL MYSLF fakes often have messy plastic collars under the atomizer."
-            ],
-            "dior": [
-                "Sauvage caps MUST be magnetic and align the bee/text automatically.",
-                "The atomizer 'eye' should be black and perfectly centered.",
-                "Check the 'CD' etching on the sprayer. Fakes are shallow and messy."
-            ],
-            "jpg": [
-                "The batch code must be laser-etched into the metal tin, not a paper sticker.",
-                "The gold finish on Elixir should be deep honey-gold, not bright yellow plastic.",
-                "The safety pin should feel sturdy and polished, not like cheap wire."
-            ],
-            "margiela": [
-                "The label is made of cotton fabric. If it feels like paper or plastic, it is fake.",
-                "The 'REPLICA' text on the bottle should be perfectly crisp and slightly raised.",
-                "Generic barcode 562112 is a confirmed mass-market counterfeit."
-            ]
-        };
-
-        // DATA: PERFORMANCE GUIDE
+        const knownScams = ["38YN908", "562112", "10L11CJ", "22U11CR"];
+        
         const scentDB = {
-            "sauvage elixir": { season: "Winter/Fall", time: "Night", notes: "Cinnamon, Lavender, Licorice", vibe: "Bold/Powerful" },
-            "stronger with you": { season: "Winter/Autumn", time: "Evening", notes: "Chestnut, Vanilla, Sage", vibe: "Sweet/Cozy" },
-            "myslf": { season: "Spring/Summer", time: "Day", notes: "Orange Blossom, Ambroxan", vibe: "Clean/Modern" },
-            "libre": { season: "All Seasons", time: "Day to Night", notes: "Lavender, Jasmine, Musk", vibe: "Elegant/Floral" },
-            "by the fireplace": { season: "Winter", time: "Night", notes: "Clove, Chestnut, Vanilla", vibe: "Smoky/Warm" },
-            "le male elixir": { season: "Winter", notes: "Honey, Tobacco, Lavender", vibe: "Rich/Sweet" }
+            "sauvage elixir": { season: "Winter/Fall", notes: "Cinnamon, Cardamom, Lavender", longevity: "12h+", sillage: "Strong" },
+            "stronger with you": { season: "Winter/Fall", notes: "Chestnut, Vanilla, Pink Pepper", longevity: "8-10h", sillage: "Moderate" },
+            "myslf": { season: "Spring/Summer", notes: "Bergamot, Orange Blossom, Patchouli", longevity: "7h", sillage: "Moderate" },
+            "libre": { season: "All Seasons", notes: "Lavender, Jasmine, Vanilla", longevity: "9h", sillage: "Strong" },
+            "acqua di gio": { season: "Summer", notes: "Marine, Bergamot, Rosemary", longevity: "6h", sillage: "Moderate" },
+            "le male elixir": { season: "Winter/Fall", notes: "Honey, Tobacco, Lavender", longevity: "10h+", sillage: "Strong" }
         };
 
-        function checkBatch() {
-            const val = document.getElementById('barcodeInput').value.trim().toUpperCase();
-            const res = document.getElementById('batchResult');
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('imagePreview');
+                output.src = reader.result;
+                document.getElementById('preview-container').style.display = 'block';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function checkTruth() {
+            const input = document.getElementById('barcodeInput').value.trim().toUpperCase();
+            const res = document.getElementById('result');
             res.style.display = "block";
             res.classList.remove('warning');
 
-            if (knownFakeCodes.includes(val)) {
+            if (knownScams.includes(input)) {
                 res.classList.add('warning');
-                res.innerHTML = "■ ANALYSIS: COUNTERFEIT DETECTED.<br>This code is a known 'Template' used on fakes across different brands. Do not apply to skin.";
-            } else if (val === "") {
-                res.innerHTML = "Please enter a code.";
+                res.innerHTML = "■ STATUS: 100% COUNTERFEIT.<br><br>This is a 'Universal Code' used by fake factories across Dior, YSL, and Armani. Using this on skin is not recommended as ingredients are unregulated.";
+            } else if (input === "") {
+                res.innerHTML = "Please enter a batch code.";
             } else {
-                res.innerHTML = "<span class='success'>■ ANALYSIS: FORMAT VALID.</span><br>Code exists in global lists. Now proceed to Step 2 to verify the bottle hardware.";
+                res.innerHTML = "<strong>■ STATUS: FORMAT VALID.</strong><br><br>Code format is correct. However, check if the atomizer 'straw' is invisible. If you can see it clearly in the liquid, the bottle is likely fake. DM @zayd90000 for a final check.";
             }
-        }
-
-        function showHardwareCheck() {
-            const brand = document.getElementById('brandSelect').value;
-            const res = document.getElementById('hardwareResult');
-            if (!brand) { res.style.display = "none"; return; }
-            
-            res.style.display = "block";
-            let html = `<strong>${brand.toUpperCase()} RED FLAGS:</strong><br><br>`;
-            hardwareData[brand].forEach(tip => {
-                html += `<div class="checklist-item">${tip}</div>`;
-            });
-            res.innerHTML = html;
         }
 
         function searchScent() {
             const query = document.getElementById('scentSearch').value.toLowerCase();
-            const res = document.getElementById('guideResult');
-            res.style.display = "block";
+            const guideDiv = document.getElementById('guide-result');
+            guideDiv.style.display = "block";
 
             let found = false;
             for (let name in scentDB) {
                 if (query.includes(name) || name.includes(query)) {
-                    const d = scentDB[name];
-                    res.innerHTML = `<strong>${name.toUpperCase()}</strong><br>` +
-                                    `<span class="perf-tag">${d.season}</span>` +
-                                    `<span class="perf-tag">${d.time}</span><br><br>` +
-                                    `Notes: ${d.notes}<br>Vibe: ${d.vibe}`;
+                    const data = scentDB[name];
+                    guideDiv.innerHTML = `<strong>${name.toUpperCase()}</strong><br>
+                                          <div class="perf-detail">Notes: ${data.notes}</div>
+                                          <div class="perf-detail">Best Season: ${data.season}</div>
+                                          <div class="perf-detail">Longevity: ${data.longevity} | Sillage: ${data.sillage}</div>`;
                     found = true;
                     break;
                 }
             }
-            if (!found) res.innerHTML = "Fragrance not found. Search 'Sauvage' or 'MYSLF'.";
+            if (!found) guideDiv.innerHTML = "Scent not in database yet. Try 'Sauvage' or 'MYSLF'.";
         }
     </script>
 </body>
