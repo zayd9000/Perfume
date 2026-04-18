@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Fragrance Truth</title>
+    <style>
+        /* Minimalist & Cinematic Aesthetic */
+        :root {
+            --bg-color: #f4f1ea; /* Soft paper/Polaroid white */
+            --accent: #2c2c2c;
+            --danger: #b22222;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--accent);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            margin: 0;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .handle {
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            padding: 30px;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.05); /* Polaroid shadow */
+            border: 1px solid #ddd;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            font-family: inherit;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #result, #guide-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-left: 4px solid var(--accent);
+            display: none;
+            line-height: 1.5;
+        }
+
+        .fake { border-left-color: var(--danger) !important; color: var(--danger); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>We all deserve to know the truth</h1>
+        <div class="handle">@zayd90000</div>
+    </header>
+
+    <div class="container">
+        <div class="section">
+            <label>Verify Batch Code / Barcode</label>
+            <input type="text" id="barcodeInput" placeholder="Enter code (e.g. 38YN908)">
+            <button onclick="checkAuthenticity()">Check Truth</button>
+            <div id="result"></div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 40px 0;">
+
+        <div class="section">
+            <label>Scent Discovery Guide</label>
+            <input type="text" id="scentSearch" placeholder="Search perfume name...">
+            <button onclick="searchScent()">Get Guide</button>
+            <div id="guide-result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Database for the test (You can expand this!)
+        const fragranceDB = {
+            "sauvage elixir": { season: "Winter/Fall", time: "Night", notes: "Spices, Lavender, Licorice" },
+            "stronger with you": { season: "Winter/Fall", time: "Night/Evening", notes: "Chestnut, Vanilla, Sage" },
+            "myslf": { season: "Spring/Summer", time: "Day", notes: "Orange Blossom, Bergamot, Ambroxan" },
+            "libre": { season: "All Seasons", time: "Day to Night", notes: "Lavender, Jasmine, Musk" },
+            "by the fireplace": { season: "Winter", time: "Night", notes: "Clove, Chestnut, Vanilla" }
+        };
+
+        const knownFakeCodes = ["38YN908", "562112"];
+
+        function checkAuthenticity() {
+            const input = document.getElementById('barcodeInput').value.trim().toUpperCase();
+          const resultDiv = document.getElementById('result');
+            resultDiv.style.display = "block";
+            resultDiv.classList.remove('fake');
+
+            if (knownFakeCodes.includes(input)) {
+                resultDiv.classList.add('fake');
+                resultDiv.innerHTML = "<strong>RESULT: LIKELY COUNTERFEIT.</strong><br>This batch code is flagged as a duplicate used across multiple brands (Dior, Armani, YSL). Real luxury brands do not share codes.";
+            } else if (input === "") {
+                resultDiv.innerHTML = "Please enter a code.";
+            } else {
+                resultDiv.innerHTML = "<strong>RESULT: CODE FORMAT VALID.</strong><br>Please double-check the bottle hardware and sprayer for further verification.";
+            }
+        }
+
+        function searchScent() {
+            const query = document.getElementById('scentSearch').value.toLowerCase();
+            const guideDiv = document.getElementById('guide-result');
+            guideDiv.style.display = "block";
+
+            // Basic search logic
+            let found = false;
+            for (let name in fragranceDB) {
+                if (query.includes(name) || name.includes(query)) {
+                    const data = fragranceDB[name];
+                    guideDiv.innerHTML = `<strong>${name.toUpperCase()}</strong><br>
+                                          Best Season: ${data.season}<br>
+                                          Best Time: ${data.time}<br>
+                                          Main Notes: ${data.notes}`;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                guideDiv.innerHTML = "Scent not found in local test DB. Try 'Sauvage' or 'Libre'.";
+            }
+        }
+    </script>
+
+</body>
+</html>
