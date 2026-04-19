@@ -23,7 +23,7 @@
             align-items: center;
             padding: 40px 20px;
             margin: 0;
-            transition: direction 0.3s;
+            transition: all 0.3s ease;
         }
 
         header { 
@@ -38,11 +38,14 @@
         h1 { font-size: 1.3rem; letter-spacing: 2px; text-transform: uppercase; margin: 0; font-weight: bold; }
         .handle { font-size: 1.1rem; letter-spacing: 4px; margin-top: 8px; font-weight: bold; }
 
+        /* Language Toggle with Kurdish Flag Style */
         .lang-switch { 
-            margin-bottom: 15px; cursor: pointer; font-size: 0.8rem; 
-            border: 1px solid #000; padding: 8px 15px; background: #fff; 
-            font-weight: bold; display: flex; align-items: center; gap: 8px;
+            margin-bottom: 15px; cursor: pointer; font-size: 0.85rem; 
+            border: 2px solid #000; padding: 10px 20px; background: #fff; 
+            font-weight: bold; display: flex; align-items: center; gap: 10px;
+            box-shadow: 4px 4px 0px #000;
         }
+        .flag-icon { width: 24px; height: auto; }
 
         .container {
             width: 100%;
@@ -55,7 +58,6 @@
         }
 
         label { display: block; margin-top: 25px; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1.5px; }
-        label:first-of-type { margin-top: 0; }
         
         input, select {
             width: 100%; padding: 12px; border: 1px solid #ddd; margin-bottom: 5px;
@@ -77,9 +79,8 @@
             font-size: 0.85rem; line-height: 1.6; background: #fff; text-align: left;
         }
 
-        .item-card { border-bottom: 1px solid #eee; padding: 12px 0; }
-        .price-tag { color: var(--danger); font-weight: bold; }
-        .coll-btn { background: #eee; color: #333; padding: 6px; font-size: 0.65rem; border: none; cursor: pointer; width: auto; margin-top: 8px; }
+        .vibe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .vibe-btn { background: #666; font-size: 0.7rem; padding: 12px; }
 
         .upload-area { border: 2px dashed #ccc; padding: 25px; text-align: center; margin-bottom: 20px; cursor: pointer; color: var(--muted); font-size: 0.8rem; }
         #imagePreview { max-width: 100%; height: auto; border: 8px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 10px; }
@@ -92,7 +93,6 @@
 
         hr { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
         
-        /* RTL adjustments for Kurdish */
         body.rtl .result-box, body.rtl .tip-box, body.rtl .fact-check, body.rtl .collection-item { text-align: right; }
         body.rtl .collection-item { border-left: 0; border-right: 4px solid #000; }
         body.rtl .char-count { text-align: left; }
@@ -100,7 +100,10 @@
 </head>
 <body>
 
-    <button class="lang-switch" onclick="toggleLang()">☀️ <span>Switch to Kurdish (Sorani)</span></button>
+    <button class="lang-switch" onclick="toggleLang()">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Flag_of_Kurdistan.svg" class="flag-icon" alt="Kurdistan">
+        <span id="lang-text">Switch to Kurdish (Sorani)</span>
+    </button>
 
     <header>
         <h1 id="main-title">THE FRAGRANCE TRUTH</h1>
@@ -142,12 +145,23 @@
 
         <hr>
 
+        <label id="lbl-vibe">Shop By Vibe</label>
+        <div class="vibe-grid">
+            <button class="vibe-btn" onclick="getVibe('Work')">Work</button>
+            <button class="vibe-btn" onclick="getVibe('Date')">Date</button>
+            <button class="vibe-btn" onclick="getVibe('Gym')">Gym</button>
+            <button class="vibe-btn" onclick="getVibe('Wedding')">Wedding</button>
+        </div>
+        <div id="vibe-result" class="result-box"></div>
+
+        <hr>
+
         <label id="lbl-coll">My Collection (Scent Shelf)</label>
         <div id="collection-list"></div>
 
         <div class="tip-box" id="climate-warn">
             <strong>ERBIL CLIMATE WARNING:</strong><br>
-            Direct heat destroys perfume. Never store bottles in vehicles or direct sunlight.
+            Direct heat destroys perfume. Never store bottles in vehicles.
         </div>
 
         <div class="fact-check" id="perf-truth">
@@ -156,7 +170,7 @@
         </div>
 
         <div style="font-size: 0.6rem; color: #aaa; text-align: center; margin-top: 25px; text-transform: uppercase;">
-            Official Retail Data - Verified April 2026
+            Verified April 2026 Retail Data
         </div>
     </div>
 
@@ -165,15 +179,13 @@
         const knownScams = ["38YN908", "562112", "10L11CJ", "22U11CR", "62X301V"];
         
         const scentDB = [
-            { name: "Sauvage Elixir", brand: "Dior", price: "$199", risk: "Low" },
-            { name: "Aventus", brand: "Creed", price: "$495", risk: "Medium" },
-            { name: "Baccarat Rouge 540", brand: "MFK", price: "$325", risk: "High" },
-            { name: "Layton", brand: "Parfums de Marly", price: "$350", risk: "Medium" },
-            { name: "Khamrah Qahwa", brand: "Lattafa", price: "$45", risk: "Low" },
-            { name: "Myslf", brand: "YSL", price: "$150", risk: "Low" },
-            { name: "Erba Pura", brand: "Xerjoff", price: "$250", risk: "Medium" },
-            { name: "Stronger With You Tobacco", brand: "Armani", price: "$130", risk: "Low" },
-            { name: "Black Phantom", brand: "Kilian", price: "$290", risk: "High" }
+            { name: "Sauvage Elixir", brand: "Dior", price: "$199", risk: "Low", vibe: "Date" },
+            { name: "Aventus", brand: "Creed", price: "$495", risk: "Medium", vibe: "Wedding" },
+            { name: "Baccarat Rouge 540", brand: "MFK", price: "$325", risk: "High", vibe: "Wedding" },
+            { name: "Layton", brand: "Parfums de Marly", price: "$350", risk: "Medium", vibe: "Date" },
+            { name: "Khamrah Qahwa", brand: "Lattafa", price: "$45", risk: "Low", vibe: "Date" },
+            { name: "Myslf", brand: "YSL", price: "$150", risk: "Low", vibe: "Work" },
+            { name: "Light Blue", brand: "D&G", price: "$120", risk: "Low", vibe: "Gym" }
         ];
 
         const translations = {
@@ -187,12 +199,13 @@
                 calc: "Calculate Cost per ML",
                 search: "Search Perfume Data (2026)",
                 btnSearch: "Search Database",
+                vibe: "Shop By Vibe",
                 coll: "My Collection (Scent Shelf)",
                 warn: "<strong>ERBIL CLIMATE WARNING:</strong><br>Direct heat destroys perfume. Never store bottles in vehicles.",
                 perf: "<strong>PERFORMANCE TRUTH:</strong><br>• EDT: 3-5h | EDP: 6-9h | Parfum: 10h+",
                 fake: "■ STATUS: 100% FAKE. Known clone code.",
-                real: "■ STATUS: FORMAT VALID. Check hardware.",
-                switch: "☀️ Switch to Kurdish (Sorani)",
+                real: "■ STATUS: FORMAT VALID.",
+                switch: "Switch to Kurdish (Sorani)",
                 mathRes: "Result: "
             },
             ku: {
@@ -205,12 +218,13 @@
                 calc: "حیسابی بکە",
                 search: "گەڕان بۆ زانیاری عەتر (٢٠٢٦)",
                 btnSearch: "بگەڕێ",
+                vibe: "بەپێی مۆد و ستایل",
                 coll: "کۆکراوەی من (ڕەفە)",
                 warn: "<strong>ئاگاداری بۆ کەشوهەوای هەولێر:</strong><br>گەرمای زۆر عەتر تێکدەدات. هەرگیز لەناو سەیارە دایمەنێ.",
                 perf: "<strong>ڕاستی مانەوەی بۆن:</strong><br>• EDT: ٣-٥ سەعات | EDP: ٦-٩ سەعات | Parfum: ١٠ سەعات+",
                 fake: "■ دۆخەکە: ١٠٠٪ فەیکە. ئەم کۆدە کۆپییە.",
-                real: "■ دۆخەکە: کۆدەکە دروستە. سەیری سەری بوتڵەکە بکە.",
-                switch: "🇬🇧 Switch to English",
+                real: "■ دۆخەکە: کۆدەکە دروستە.",
+                switch: "گۆڕین بۆ ئینگلیزی",
                 mathRes: "ئەنجام: "
             }
         };
@@ -227,10 +241,11 @@
             document.getElementById('btn-math').innerText = t.calc;
             document.getElementById('lbl-search').innerText = t.search;
             document.getElementById('btn-search').innerText = t.btnSearch;
+            document.getElementById('lbl-vibe').innerText = t.vibe;
             document.getElementById('lbl-coll').innerText = t.coll;
             document.getElementById('climate-warn').innerHTML = t.warn;
             document.getElementById('perf-truth').innerHTML = t.perf;
-            document.querySelector('.lang-switch span').innerText = t.switch;
+            document.getElementById('lang-text').innerText = t.switch;
             
             document.body.classList.toggle('rtl', currentLang === 'ku');
             document.body.style.direction = currentLang === 'ku' ? 'rtl' : 'ltr';
@@ -239,9 +254,8 @@
 
         function updateCharCount() {
             const input = document.getElementById('barcodeInput').value;
-            const display = document.getElementById('countDisplay');
             const suffix = currentLang === 'ku' ? " پیت نووسراوە" : " characters";
-            display.innerText = `${input.length} / 8-10 ${suffix}`;
+            document.getElementById('countDisplay').innerText = `${input.length} / 8-10 ${suffix}`;
         }
 
         function calculateValue() {
@@ -250,7 +264,7 @@
             const r = document.getElementById('math-result');
             if (p > 0 && s > 0) {
                 r.style.display = "block";
-                r.innerHTML = `${translations[currentLang].mathRes} <strong>$${(p / s).toFixed(2)} / 1ml</strong>`;
+                r.innerHTML = `${translations[currentLang].mathRes} <strong>$${(p/s).toFixed(2)} / 1ml</strong>`;
             }
         }
 
@@ -258,13 +272,7 @@
             const val = document.getElementById('barcodeInput').value.trim().toUpperCase();
             const res = document.getElementById('result');
             res.style.display = "block";
-            if (val.length < 3) {
-                res.innerHTML = currentLang === 'ku' ? "کۆدەکە زۆر کورتە" : "Code too short.";
-            } else if (knownScams.includes(val)) {
-                res.innerHTML = `<span style="color:red; font-weight:bold;">${translations[currentLang].fake}</span>`;
-            } else {
-                res.innerHTML = `<span style="color:green; font-weight:bold;">${translations[currentLang].real}</span>`;
-            }
+            res.innerHTML = knownScams.includes(val) ? translations[currentLang].fake : translations[currentLang].real;
         }
 
         function searchScent() {
@@ -277,16 +285,17 @@
             
             if (filtered.length > 0) {
                 filtered.forEach(s => {
-                    res.innerHTML += `
-                        <div class="item-card">
-                            <strong>${s.brand}: ${s.name}</strong><br>
-                            <span class="price-tag">${s.price}</span> | Risk: ${s.risk} <br>
-                            <button class="coll-btn" onclick="addToCollection('${s.name}')">+ Add to Shelf</button>
-                        </div>`;
+                    res.innerHTML += `<div class="item-card"><strong>${s.brand}: ${s.name}</strong><br><span class="price-tag">${s.price}</span> | Risk: ${s.risk}<br><button class="coll-btn" onclick="addToCollection('${s.name}')">+ Add to Shelf</button></div>`;
                 });
-            } else {
-                res.innerHTML = currentLang === 'ku' ? "نەدۆزرایەوە" : "Not in database.";
-            }
+            } else { res.innerHTML = currentLang === 'ku' ? "نەدۆزرایەوە" : "Not found."; }
+        }
+
+        function getVibe(v) {
+            const res = document.getElementById('vibe-result');
+            res.style.display = "block";
+            res.innerHTML = "";
+            const filtered = scentDB.filter(s => s.vibe === v);
+            filtered.forEach(s => { res.innerHTML += `• ${s.brand} ${s.name}<br>`; });
         }
 
         function addToCollection(name) {
@@ -299,11 +308,7 @@
         function showCollection() {
             const list = document.getElementById('collection-list');
             const coll = JSON.parse(localStorage.getItem('myColl') || "[]");
-            list.innerHTML = coll.map(i => `
-                <div class="collection-item">
-                    <span>${i}</span>
-                    <span class="del-btn" onclick="removeFromColl('${i}')">X</span>
-                </div>`).join('');
+            list.innerHTML = coll.map(i => `<div class="collection-item"><span>${i}</span><span class="del-btn" onclick="removeFromColl('${i}')">X</span></div>`).join('');
         }
 
         function removeFromColl(name) {
@@ -315,10 +320,7 @@
 
         function previewImage(e) {
             const r = new FileReader();
-            r.onload = () => { 
-                document.getElementById('imagePreview').src = r.result; 
-                document.getElementById('preview-container').style.display='block'; 
-            };
+            r.onload = () => { document.getElementById('imagePreview').src = r.result; document.getElementById('preview-container').style.display='block'; };
             r.readAsDataURL(e.target.files[0]);
         }
 
