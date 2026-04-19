@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fragrance Verification Lab | @zayd90000</title>
+    <title>The Fragrance Truth | @zayd90000</title>
     <style>
         :root {
             --bg-color: #f4f1ea; 
@@ -47,7 +47,8 @@
             box-sizing: border-box;
         }
 
-        label { display: block; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1.5px; }
+        label { display: block; margin-top: 20px; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1.5px; }
+        label:first-of-type { margin-top: 0; }
         
         input, select {
             width: 100%; padding: 12px; border: 1px solid #ddd; margin-bottom: 15px;
@@ -57,40 +58,41 @@
         button {
             width: 100%; padding: 15px; background: var(--accent); color: white; border: none;
             cursor: pointer; text-transform: uppercase; font-weight: bold; letter-spacing: 2px;
-            margin-bottom: 10px; transition: opacity 0.2s;
+            margin-bottom: 10px; transition: 0.2s;
         }
 
-        button:hover { opacity: 0.9; }
+        button:hover { opacity: 0.8; }
 
         .result-box {
-            margin-top: 20px; padding: 20px; border: 1px solid #eee; display: none;
-            font-size: 0.85rem; line-height: 1.6; background: #fff;
+            margin-top: 15px; padding: 20px; border: 1px solid #eee; display: none;
+            font-size: 0.85rem; line-height: 1.6; background: #fff; text-align: left;
         }
 
-        .upload-area { border: 2px dashed #ccc; padding: 20px; text-align: center; margin-bottom: 20px; cursor: pointer; color: var(--muted); font-size: 0.8rem; }
+        .upload-area { border: 2px dashed #ccc; padding: 25px; text-align: center; margin-bottom: 20px; cursor: pointer; color: var(--muted); font-size: 0.8rem; }
         #imagePreview { max-width: 100%; height: auto; border: 8px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 10px; }
 
         .history-tag { display: inline-block; background: #eee; padding: 4px 10px; margin: 4px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
         .price-tag { color: var(--danger); font-weight: bold; margin: 5px 0; }
-        .tip-box { background: #fdfdfd; padding: 15px; border: 1px solid #eee; font-size: 0.75rem; margin-top: 20px; line-height: 1.5; }
-        .vibe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .vibe-btn { background: #666; font-size: 0.7rem; color: white; border: none; padding: 10px; cursor: pointer; text-transform: uppercase; }
         
-        .fact-check { background: #fff9f9; padding: 15px; border-left: 4px solid var(--danger); font-size: 0.75rem; margin: 20px 0; }
+        .tip-box { background: #fdfdfd; padding: 15px; border: 1px solid #eee; font-size: 0.75rem; margin-top: 20px; line-height: 1.5; text-align: left; }
+        .fact-check { background: #fff9f9; padding: 15px; border-left: 4px solid var(--danger); font-size: 0.75rem; margin-top: 20px; text-align: left; }
+        
+        .vibe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .vibe-btn { background: #666; font-size: 0.7rem; padding: 12px; color: white; border: none; cursor: pointer; text-transform: uppercase; }
+
+        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>The Fragrance Truth</h1>
+        <h1>THE FRAGRANCE TRUTH</h1>
         <div class="handle">@zayd90000</div>
     </header>
 
     <div class="container">
-        <a class="weatherwidget-io" href="https://forecast7.com/en/36d1944d01/erbil/" data-label_1="ERBIL" data-label_2="LIVE WEATHER" data-theme="pure" >ERBIL LIVE WEATHER</a>
-        <script>
-        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
-        </script>
+        <a class="weatherwidget-io" href="https://forecast7.com/en/36d1944d01/erbil/" data-label_1="ERBIL" data-label_2="LIVE WEATHER" data-theme="pure">ERBIL LIVE WEATHER</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');</script>
         
         <hr>
 
@@ -99,8 +101,8 @@
             <input type="number" id="perfPrice" placeholder="Price ($)">
             <input type="number" id="perfSize" placeholder="Size (ml)">
         </div>
-        <button onclick="calculateValue()" style="background:#444;">Calculate Cost per ML</button>
-        <div id="math-result" class="result-box" style="border-left: 3px solid #444;"></div>
+        <button onclick="calculateValue()" style="background:#555;">Calculate Cost per ML</button>
+        <div id="math-result" class="result-box"></div>
 
         <hr>
 
@@ -119,6 +121,24 @@
 
         <hr>
 
+        <label>Scent Discovery & Recommendations</label>
+        <div style="display: flex; gap: 10px;">
+            <select id="seasonSelect">
+                <option value="Summer">Summer</option>
+                <option value="Winter">Winter</option>
+                <option value="Spring">Spring</option>
+                <option value="Fall">Fall</option>
+            </select>
+            <select id="timeSelect">
+                <option value="Day">Day</option>
+                <option value="Night">Night</option>
+            </select>
+        </div>
+        <button onclick="getRecommendation()">Find Perfect Matches</button>
+        <div id="suggest-result" class="result-box"></div>
+
+        <hr>
+
         <label>Shop by Vibe</label>
         <div class="vibe-grid">
             <button class="vibe-btn" onclick="getVibe('Work')">Work/Office</button>
@@ -133,9 +153,7 @@
         <label>Visual Evidence</label>
         <div class="upload-area" onclick="document.getElementById('imageInput').click()">[+] Upload Bottle Photo</div>
         <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="previewImage(event)">
-        <div id="preview-container" style="display:none; text-align:center;">
-            <img id="imagePreview" src="#">
-        </div>
+        <div id="preview-container" style="display:none; text-align:center;"><img id="imagePreview" src="#"></div>
 
         <div class="tip-box">
             <strong>ERBIL CLIMATE WARNING:</strong><br>
@@ -158,15 +176,14 @@
         const knownScams = ["38YN908", "562112", "10L11CJ", "22U11CR", "62X301V"];
         
         const scentDB = {
-            "sauvage elixir": { brand: "Dior", price: "$199 (60ml)", season: "Winter", vibe: "Date", risk: "Low", notes: "Spices, Licorice" },
-            "bleu de chanel": { brand: "Chanel", price: "$168 (100ml)", season: "Summer", vibe: "Work", risk: "Low", notes: "Sandalwood, Citrus" },
-            "aventus": { brand: "Creed", price: "$495 (100ml)", season: "Spring", vibe: "Wedding", risk: "Medium", notes: "Pineapple, Birch" },
-            "myslf": { brand: "YSL", price: "$150 (100ml)", season: "Spring", vibe: "Work", risk: "Low", notes: "Orange Blossom" },
-            "layton": { brand: "Parfums de Marly", price: "$350 (125ml)", season: "Fall", vibe: "Date", risk: "Medium", notes: "Apple, Vanilla" },
-            "baccarat rouge 540": { brand: "MFK", price: "$325 (70ml)", season: "Winter", vibe: "Wedding", risk: "High", notes: "Saffron, Jasmine" },
-            "light blue": { brand: "D&G", price: "$120 (100ml)", season: "Summer", vibe: "Gym", risk: "Low", notes: "Citrus, Apple" },
-            "good girl": { brand: "Carolina Herrera", price: "$138 (80ml)", season: "Fall", vibe: "Date", risk: "Low", notes: "Cacao, Coffee" },
-            "black phantom": { brand: "Kilian", price: "$290 (50ml)", season: "Winter", vibe: "Date", risk: "High", notes: "Rum, Chocolate" }
+            "sauvage elixir": { brand: "Dior", price: "$199", season: "Winter", time: "Night", vibe: "Date", risk: "Low" },
+            "bleu de chanel": { brand: "Chanel", price: "$168", season: "Summer", time: "Day", vibe: "Work", risk: "Low" },
+            "aventus": { brand: "Creed", price: "$495", season: "Spring", time: "Day", vibe: "Wedding", risk: "Medium" },
+            "myslf": { brand: "YSL", price: "$150", season: "Spring", time: "Day", vibe: "Work", risk: "Low" },
+            "layton": { brand: "Parfums de Marly", price: "$350", season: "Fall", time: "Night", vibe: "Date", risk: "Medium" },
+            "baccarat rouge 540": { brand: "MFK", price: "$325", season: "Winter", time: "Night", vibe: "Wedding", risk: "High" },
+            "light blue": { brand: "D&G", price: "$120", season: "Summer", time: "Day", vibe: "Gym", risk: "Low" },
+            "black phantom": { brand: "Kilian", price: "$290", season: "Winter", time: "Night", vibe: "Date", risk: "High" }
         };
 
         function calculateValue() {
@@ -175,7 +192,7 @@
             const r = document.getElementById('math-result');
             if (p > 0 && s > 0) {
                 r.style.display = "block";
-                r.innerHTML = `Value: <strong>$${(p / s).toFixed(2)} per 1ml</strong>.`;
+                r.innerHTML = `Result: <strong>$${(p / s).toFixed(2)} per 1ml</strong>.`;
             }
         }
 
@@ -184,32 +201,31 @@
             const res = document.getElementById('result');
             res.style.display = "block";
             if (knownScams.includes(input)) {
-                res.innerHTML = "<span style='color:red; font-weight:bold;'>■ 100% FAKE.</span> This is a known counterfeit code.";
+                res.innerHTML = "<span style='color:red;'>■ 100% FAKE.</span> Known clone code.";
             } else {
-                res.innerHTML = "■ FORMAT VALID. Check hardware (dip tube and sprayer) to confirm.";
+                res.innerHTML = "■ FORMAT VALID. Check bottle weight to confirm.";
             }
         }
 
         function searchScent() {
-            const query = document.getElementById('scentSearch').value.toLowerCase().trim();
-            if (!query) return;
-            saveHistory(query);
-            const guideDiv = document.getElementById('guide-result');
-            guideDiv.style.display = "block";
+            const q = document.getElementById('scentSearch').value.toLowerCase().trim();
+            if (!q) return;
+            saveHistory(q);
+            const res = document.getElementById('guide-result');
+            res.style.display = "block";
             let found = false;
             for (let n in scentDB) {
-                if (query.includes(n) || n.includes(query)) {
-                    const d = scentDB[n];
-                    guideDiv.innerHTML = `<strong>${d.brand}: ${n.toUpperCase()}</strong><br><div class="price-tag">Price: ${d.price}</div>Risk Score: ${d.risk}<br><small>${d.risk === 'High' ? '⚠️ Unique scent - test before buying.' : '✅ Safe, crowd-pleaser.'}</small>`;
+                if (q.includes(n) || n.includes(q)) {
+                    res.innerHTML = `<strong>${scentDB[n].brand}: ${n.toUpperCase()}</strong><br><span class="price-tag">Price: ${scentDB[n].price}</span><br>Risk: ${scentDB[n].risk}`;
                     found = true; break;
                 }
             }
-            if (!found) guideDiv.innerHTML = "Not found. Verify with official brand website.";
+            if (!found) res.innerHTML = "Not in database.";
         }
 
-        function saveHistory(term) {
+        function saveHistory(t) {
             let h = JSON.parse(localStorage.getItem('pHistory') || "[]");
-            h = h.filter(i => i !== term); h.unshift(term);
+            h = h.filter(i => i !== t); h.unshift(t);
             if (h.length > 5) h.pop();
             localStorage.setItem('pHistory', JSON.stringify(h));
             showHistory();
@@ -223,10 +239,21 @@
 
         function quickSearch(t) { document.getElementById('scentSearch').value = t; searchScent(); }
 
+        function getRecommendation() {
+            const s = document.getElementById('seasonSelect').value;
+            const t = document.getElementById('timeSelect').value;
+            const res = document.getElementById('suggest-result');
+            res.style.display = "block";
+            res.innerHTML = `<strong>PICKS FOR ${s.toUpperCase()} ${t.toUpperCase()}:</strong><br>`;
+            for (let n in scentDB) {
+                if (scentDB[n].season === s && scentDB[n].time === t) res.innerHTML += `• ${scentDB[n].brand} ${n.toUpperCase()}<br>`;
+            }
+        }
+
         function getVibe(v) {
             const res = document.getElementById('vibe-result');
             res.style.display = "block";
-            res.innerHTML = `<strong>${v.toUpperCase()} RECOMMENDATIONS:</strong><br>`;
+            res.innerHTML = `<strong>FOR ${v.toUpperCase()}:</strong><br>`;
             for (let n in scentDB) { if (scentDB[n].vibe === v) res.innerHTML += `• ${scentDB[n].brand} ${n.toUpperCase()}<br>`; }
         }
 
