@@ -23,11 +23,12 @@
             align-items: center;
             padding: 40px 20px;
             margin: 0;
+            transition: direction 0.3s;
         }
 
         header { 
             text-align: center; 
-            margin-bottom: 30px; 
+            margin-bottom: 20px; 
             border-bottom: 2px solid var(--accent); 
             padding-bottom: 15px; 
             width: 100%; 
@@ -36,6 +37,12 @@
 
         h1 { font-size: 1.3rem; letter-spacing: 2px; text-transform: uppercase; margin: 0; font-weight: bold; }
         .handle { font-size: 1.1rem; letter-spacing: 4px; margin-top: 8px; font-weight: bold; }
+
+        .lang-switch { 
+            margin-bottom: 15px; cursor: pointer; font-size: 0.8rem; 
+            border: 1px solid #000; padding: 8px 15px; background: #fff; 
+            font-weight: bold; display: flex; align-items: center; gap: 8px;
+        }
 
         .container {
             width: 100%;
@@ -47,13 +54,15 @@
             box-sizing: border-box;
         }
 
-        label { display: block; margin-top: 20px; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1.5px; }
+        label { display: block; margin-top: 25px; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1.5px; }
         label:first-of-type { margin-top: 0; }
         
         input, select {
-            width: 100%; padding: 12px; border: 1px solid #ddd; margin-bottom: 15px;
+            width: 100%; padding: 12px; border: 1px solid #ddd; margin-bottom: 5px;
             font-family: inherit; background: #fafafa; box-sizing: border-box; outline: none;
         }
+
+        .char-count { font-size: 0.65rem; color: var(--muted); margin-bottom: 15px; text-align: right; display: block; }
 
         button {
             width: 100%; padding: 15px; background: var(--accent); color: white; border: none;
@@ -68,103 +77,82 @@
             font-size: 0.85rem; line-height: 1.6; background: #fff; text-align: left;
         }
 
+        .item-card { border-bottom: 1px solid #eee; padding: 12px 0; }
+        .price-tag { color: var(--danger); font-weight: bold; }
+        .coll-btn { background: #eee; color: #333; padding: 6px; font-size: 0.65rem; border: none; cursor: pointer; width: auto; margin-top: 8px; }
+
         .upload-area { border: 2px dashed #ccc; padding: 25px; text-align: center; margin-bottom: 20px; cursor: pointer; color: var(--muted); font-size: 0.8rem; }
         #imagePreview { max-width: 100%; height: auto; border: 8px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 10px; }
 
-        .history-tag { display: inline-block; background: #eee; padding: 4px 10px; margin: 4px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
-        .price-tag { color: var(--danger); font-weight: bold; margin: 5px 0; }
-        
+        .collection-item { background: #fdfdfd; padding: 12px; margin-bottom: 8px; border-left: 4px solid #000; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .del-btn { color: var(--danger); cursor: pointer; font-weight: bold; padding: 5px; }
+
         .tip-box { background: #fdfdfd; padding: 15px; border: 1px solid #eee; font-size: 0.75rem; margin-top: 20px; line-height: 1.5; text-align: left; }
         .fact-check { background: #fff9f9; padding: 15px; border-left: 4px solid var(--danger); font-size: 0.75rem; margin-top: 20px; text-align: left; }
-        
-        .vibe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .vibe-btn { background: #666; font-size: 0.7rem; padding: 12px; color: white; border: none; cursor: pointer; text-transform: uppercase; }
 
-        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+        hr { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+        
+        /* RTL adjustments for Kurdish */
+        body.rtl .result-box, body.rtl .tip-box, body.rtl .fact-check, body.rtl .collection-item { text-align: right; }
+        body.rtl .collection-item { border-left: 0; border-right: 4px solid #000; }
+        body.rtl .char-count { text-align: left; }
     </style>
 </head>
 <body>
 
+    <button class="lang-switch" onclick="toggleLang()">☀️ <span>Switch to Kurdish (Sorani)</span></button>
+
     <header>
-        <h1>THE FRAGRANCE TRUTH</h1>
+        <h1 id="main-title">THE FRAGRANCE TRUTH</h1>
         <div class="handle">@zayd90000</div>
     </header>
 
     <div class="container">
         <a class="weatherwidget-io" href="https://forecast7.com/en/36d1944d01/erbil/" data-label_1="ERBIL" data-label_2="LIVE WEATHER" data-theme="pure">ERBIL LIVE WEATHER</a>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');</script>
-        
+
         <hr>
 
-        <label>Fragrance Math (Value Checker)</label>
+        <label id="lbl-verify">Verification Lab (Batch Checker)</label>
+        <input type="text" id="barcodeInput" maxlength="12" placeholder="Batch Code (e.g. 38YN908)" oninput="updateCharCount()">
+        <span class="char-count" id="countDisplay">0 / 8-10 characters recommended</span>
+        <button id="btn-verify" onclick="checkTruth()">Analyze Authenticity</button>
+        <div id="result" class="result-box"></div>
+
+        <label id="lbl-visual">Visual Evidence</label>
+        <div class="upload-area" id="up-area" onclick="document.getElementById('imageInput').click()">[+] Upload Bottle or Box Photo</div>
+        <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="previewImage(event)">
+        <div id="preview-container" style="display:none; text-align:center;"><img id="imagePreview" src="#"></div>
+
+        <hr>
+
+        <label id="lbl-math">Fragrance Math (Value Checker)</label>
         <div style="display: flex; gap: 10px;">
             <input type="number" id="perfPrice" placeholder="Price ($)">
             <input type="number" id="perfSize" placeholder="Size (ml)">
         </div>
-        <button onclick="calculateValue()" style="background:#555;">Calculate Cost per ML</button>
+        <button id="btn-math" onclick="calculateValue()">Calculate Cost per ML</button>
         <div id="math-result" class="result-box"></div>
 
         <hr>
 
-        <label>Verification Lab</label>
-        <input type="text" id="barcodeInput" placeholder="Enter Batch Code (e.g. 38YN908)">
-        <button onclick="checkTruth()">Analyze Authenticity</button>
-        <div id="result" class="result-box"></div>
-
-        <hr>
-
-        <label>Search Perfume Data</label>
-        <input type="text" id="scentSearch" placeholder="Search (e.g. Sauvage, Kilian, Delina)">
-        <button onclick="searchScent()">Search Database</button>
-        <div id="recent-list" style="margin-bottom: 10px;"></div>
+        <label id="lbl-search">Search Perfume Data (2026)</label>
+        <input type="text" id="scentSearch" placeholder="Search (Dior, Creed, Lattafa...)" onkeyup="if(event.key==='Enter')searchScent()">
+        <button id="btn-search" onclick="searchScent()">Search Database</button>
         <div id="guide-result" class="result-box"></div>
 
         <hr>
 
-        <label>Scent Discovery & Recommendations</label>
-        <div style="display: flex; gap: 10px;">
-            <select id="seasonSelect">
-                <option value="Summer">Summer</option>
-                <option value="Winter">Winter</option>
-                <option value="Spring">Spring</option>
-                <option value="Fall">Fall</option>
-            </select>
-            <select id="timeSelect">
-                <option value="Day">Day</option>
-                <option value="Night">Night</option>
-            </select>
-        </div>
-        <button onclick="getRecommendation()">Find Perfect Matches</button>
-        <div id="suggest-result" class="result-box"></div>
+        <label id="lbl-coll">My Collection (Scent Shelf)</label>
+        <div id="collection-list"></div>
 
-        <hr>
-
-        <label>Shop by Vibe</label>
-        <div class="vibe-grid">
-            <button class="vibe-btn" onclick="getVibe('Work')">Work/Office</button>
-            <button class="vibe-btn" onclick="getVibe('Date')">Date Night</button>
-            <button class="vibe-btn" onclick="getVibe('Gym')">Gym/Fresh</button>
-            <button class="vibe-btn" onclick="getVibe('Wedding')">Wedding/Formal</button>
-        </div>
-        <div id="vibe-result" class="result-box"></div>
-
-        <hr>
-
-        <label>Visual Evidence</label>
-        <div class="upload-area" onclick="document.getElementById('imageInput').click()">[+] Upload Bottle Photo</div>
-        <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="previewImage(event)">
-        <div id="preview-container" style="display:none; text-align:center;"><img id="imagePreview" src="#"></div>
-
-        <div class="tip-box">
+        <div class="tip-box" id="climate-warn">
             <strong>ERBIL CLIMATE WARNING:</strong><br>
-            Extreme heat destroys fragrance molecules. Never store perfume in cars. If a scent smells like pure alcohol, it has likely "turned" or is a low-quality counterfeit.
+            Direct heat destroys perfume. Never store bottles in vehicles or direct sunlight.
         </div>
 
-        <div class="fact-check">
+        <div class="fact-check" id="perf-truth">
             <strong>PERFORMANCE TRUTH:</strong><br>
-            • EDT: 3-5 Hours (Fresh/Daily)<br>
-            • EDP: 6-9 Hours (Standard Performance)<br>
-            • Parfum/Extrait: 10-24 Hours (Deep/Intimate)
+            • EDT: 3-5h | EDP: 6-9h | Parfum: 10h+
         </div>
 
         <div style="font-size: 0.6rem; color: #aaa; text-align: center; margin-top: 25px; text-transform: uppercase;">
@@ -173,18 +161,88 @@
     </div>
 
     <script>
+        let currentLang = 'en';
         const knownScams = ["38YN908", "562112", "10L11CJ", "22U11CR", "62X301V"];
         
-        const scentDB = {
-            "sauvage elixir": { brand: "Dior", price: "$199", season: "Winter", time: "Night", vibe: "Date", risk: "Low" },
-            "bleu de chanel": { brand: "Chanel", price: "$168", season: "Summer", time: "Day", vibe: "Work", risk: "Low" },
-            "aventus": { brand: "Creed", price: "$495", season: "Spring", time: "Day", vibe: "Wedding", risk: "Medium" },
-            "myslf": { brand: "YSL", price: "$150", season: "Spring", time: "Day", vibe: "Work", risk: "Low" },
-            "layton": { brand: "Parfums de Marly", price: "$350", season: "Fall", time: "Night", vibe: "Date", risk: "Medium" },
-            "baccarat rouge 540": { brand: "MFK", price: "$325", season: "Winter", time: "Night", vibe: "Wedding", risk: "High" },
-            "light blue": { brand: "D&G", price: "$120", season: "Summer", time: "Day", vibe: "Gym", risk: "Low" },
-            "black phantom": { brand: "Kilian", price: "$290", season: "Winter", time: "Night", vibe: "Date", risk: "High" }
+        const scentDB = [
+            { name: "Sauvage Elixir", brand: "Dior", price: "$199", risk: "Low" },
+            { name: "Aventus", brand: "Creed", price: "$495", risk: "Medium" },
+            { name: "Baccarat Rouge 540", brand: "MFK", price: "$325", risk: "High" },
+            { name: "Layton", brand: "Parfums de Marly", price: "$350", risk: "Medium" },
+            { name: "Khamrah Qahwa", brand: "Lattafa", price: "$45", risk: "Low" },
+            { name: "Myslf", brand: "YSL", price: "$150", risk: "Low" },
+            { name: "Erba Pura", brand: "Xerjoff", price: "$250", risk: "Medium" },
+            { name: "Stronger With You Tobacco", brand: "Armani", price: "$130", risk: "Low" },
+            { name: "Black Phantom", brand: "Kilian", price: "$290", risk: "High" }
+        ];
+
+        const translations = {
+            en: {
+                title: "THE FRAGRANCE TRUTH",
+                verify: "Verification Lab (Batch Checker)",
+                analyze: "Analyze Authenticity",
+                visual: "Visual Evidence",
+                upload: "[+] Upload Bottle or Box Photo",
+                math: "Fragrance Math (Value Checker)",
+                calc: "Calculate Cost per ML",
+                search: "Search Perfume Data (2026)",
+                btnSearch: "Search Database",
+                coll: "My Collection (Scent Shelf)",
+                warn: "<strong>ERBIL CLIMATE WARNING:</strong><br>Direct heat destroys perfume. Never store bottles in vehicles.",
+                perf: "<strong>PERFORMANCE TRUTH:</strong><br>• EDT: 3-5h | EDP: 6-9h | Parfum: 10h+",
+                fake: "■ STATUS: 100% FAKE. Known clone code.",
+                real: "■ STATUS: FORMAT VALID. Check hardware.",
+                switch: "☀️ Switch to Kurdish (Sorani)",
+                mathRes: "Result: "
+            },
+            ku: {
+                title: "ڕاستی عەترەکان",
+                verify: "تاقیگەی دڵنیایی (پشکنینی کۆد)",
+                analyze: "پشکنین بکە",
+                visual: "بەڵگەی بینراو",
+                upload: "[+] وێنەی بوتڵەکە دابنێ",
+                math: "حیساباتی عەتر (نرخی مل)",
+                calc: "حیسابی بکە",
+                search: "گەڕان بۆ زانیاری عەتر (٢٠٢٦)",
+                btnSearch: "بگەڕێ",
+                coll: "کۆکراوەی من (ڕەفە)",
+                warn: "<strong>ئاگاداری بۆ کەشوهەوای هەولێر:</strong><br>گەرمای زۆر عەتر تێکدەدات. هەرگیز لەناو سەیارە دایمەنێ.",
+                perf: "<strong>ڕاستی مانەوەی بۆن:</strong><br>• EDT: ٣-٥ سەعات | EDP: ٦-٩ سەعات | Parfum: ١٠ سەعات+",
+                fake: "■ دۆخەکە: ١٠٠٪ فەیکە. ئەم کۆدە کۆپییە.",
+                real: "■ دۆخەکە: کۆدەکە دروستە. سەیری سەری بوتڵەکە بکە.",
+                switch: "🇬🇧 Switch to English",
+                mathRes: "ئەنجام: "
+            }
         };
+
+        function toggleLang() {
+            currentLang = currentLang === 'en' ? 'ku' : 'en';
+            const t = translations[currentLang];
+            document.getElementById('main-title').innerText = t.title;
+            document.getElementById('lbl-verify').innerText = t.verify;
+            document.getElementById('btn-verify').innerText = t.analyze;
+            document.getElementById('lbl-visual').innerText = t.visual;
+            document.getElementById('up-area').innerText = t.upload;
+            document.getElementById('lbl-math').innerText = t.math;
+            document.getElementById('btn-math').innerText = t.calc;
+            document.getElementById('lbl-search').innerText = t.search;
+            document.getElementById('btn-search').innerText = t.btnSearch;
+            document.getElementById('lbl-coll').innerText = t.coll;
+            document.getElementById('climate-warn').innerHTML = t.warn;
+            document.getElementById('perf-truth').innerHTML = t.perf;
+            document.querySelector('.lang-switch span').innerText = t.switch;
+            
+            document.body.classList.toggle('rtl', currentLang === 'ku');
+            document.body.style.direction = currentLang === 'ku' ? 'rtl' : 'ltr';
+            updateCharCount();
+        }
+
+        function updateCharCount() {
+            const input = document.getElementById('barcodeInput').value;
+            const display = document.getElementById('countDisplay');
+            const suffix = currentLang === 'ku' ? " پیت نووسراوە" : " characters";
+            display.innerText = `${input.length} / 8-10 ${suffix}`;
+        }
 
         function calculateValue() {
             const p = document.getElementById('perfPrice').value;
@@ -192,78 +250,80 @@
             const r = document.getElementById('math-result');
             if (p > 0 && s > 0) {
                 r.style.display = "block";
-                r.innerHTML = `Result: <strong>$${(p / s).toFixed(2)} per 1ml</strong>.`;
+                r.innerHTML = `${translations[currentLang].mathRes} <strong>$${(p / s).toFixed(2)} / 1ml</strong>`;
             }
         }
 
         function checkTruth() {
-            const input = document.getElementById('barcodeInput').value.trim().toUpperCase();
+            const val = document.getElementById('barcodeInput').value.trim().toUpperCase();
             const res = document.getElementById('result');
             res.style.display = "block";
-            if (knownScams.includes(input)) {
-                res.innerHTML = "<span style='color:red;'>■ 100% FAKE.</span> Known clone code.";
+            if (val.length < 3) {
+                res.innerHTML = currentLang === 'ku' ? "کۆدەکە زۆر کورتە" : "Code too short.";
+            } else if (knownScams.includes(val)) {
+                res.innerHTML = `<span style="color:red; font-weight:bold;">${translations[currentLang].fake}</span>`;
             } else {
-                res.innerHTML = "■ FORMAT VALID. Check bottle weight to confirm.";
+                res.innerHTML = `<span style="color:green; font-weight:bold;">${translations[currentLang].real}</span>`;
             }
         }
 
         function searchScent() {
             const q = document.getElementById('scentSearch').value.toLowerCase().trim();
-            if (!q) return;
-            saveHistory(q);
             const res = document.getElementById('guide-result');
+            if (!q) return;
             res.style.display = "block";
-            let found = false;
-            for (let n in scentDB) {
-                if (q.includes(n) || n.includes(q)) {
-                    res.innerHTML = `<strong>${scentDB[n].brand}: ${n.toUpperCase()}</strong><br><span class="price-tag">Price: ${scentDB[n].price}</span><br>Risk: ${scentDB[n].risk}`;
-                    found = true; break;
-                }
-            }
-            if (!found) res.innerHTML = "Not in database.";
-        }
-
-        function saveHistory(t) {
-            let h = JSON.parse(localStorage.getItem('pHistory') || "[]");
-            h = h.filter(i => i !== t); h.unshift(t);
-            if (h.length > 5) h.pop();
-            localStorage.setItem('pHistory', JSON.stringify(h));
-            showHistory();
-        }
-
-        function showHistory() {
-            const list = document.getElementById('recent-list');
-            const h = JSON.parse(localStorage.getItem('pHistory') || "[]");
-            list.innerHTML = h.map(i => `<span class="history-tag" onclick="quickSearch('${i}')">${i}</span>`).join('');
-        }
-
-        function quickSearch(t) { document.getElementById('scentSearch').value = t; searchScent(); }
-
-        function getRecommendation() {
-            const s = document.getElementById('seasonSelect').value;
-            const t = document.getElementById('timeSelect').value;
-            const res = document.getElementById('suggest-result');
-            res.style.display = "block";
-            res.innerHTML = `<strong>PICKS FOR ${s.toUpperCase()} ${t.toUpperCase()}:</strong><br>`;
-            for (let n in scentDB) {
-                if (scentDB[n].season === s && scentDB[n].time === t) res.innerHTML += `• ${scentDB[n].brand} ${n.toUpperCase()}<br>`;
+            res.innerHTML = "";
+            const filtered = scentDB.filter(s => s.name.toLowerCase().includes(q) || s.brand.toLowerCase().includes(q));
+            
+            if (filtered.length > 0) {
+                filtered.forEach(s => {
+                    res.innerHTML += `
+                        <div class="item-card">
+                            <strong>${s.brand}: ${s.name}</strong><br>
+                            <span class="price-tag">${s.price}</span> | Risk: ${s.risk} <br>
+                            <button class="coll-btn" onclick="addToCollection('${s.name}')">+ Add to Shelf</button>
+                        </div>`;
+                });
+            } else {
+                res.innerHTML = currentLang === 'ku' ? "نەدۆزرایەوە" : "Not in database.";
             }
         }
 
-        function getVibe(v) {
-            const res = document.getElementById('vibe-result');
-            res.style.display = "block";
-            res.innerHTML = `<strong>FOR ${v.toUpperCase()}:</strong><br>`;
-            for (let n in scentDB) { if (scentDB[n].vibe === v) res.innerHTML += `• ${scentDB[n].brand} ${n.toUpperCase()}<br>`; }
+        function addToCollection(name) {
+            let coll = JSON.parse(localStorage.getItem('myColl') || "[]");
+            if (!coll.includes(name)) coll.push(name);
+            localStorage.setItem('myColl', JSON.stringify(coll));
+            showCollection();
+        }
+
+        function showCollection() {
+            const list = document.getElementById('collection-list');
+            const coll = JSON.parse(localStorage.getItem('myColl') || "[]");
+            list.innerHTML = coll.map(i => `
+                <div class="collection-item">
+                    <span>${i}</span>
+                    <span class="del-btn" onclick="removeFromColl('${i}')">X</span>
+                </div>`).join('');
+        }
+
+        function removeFromColl(name) {
+            let coll = JSON.parse(localStorage.getItem('myColl') || "[]");
+            coll = coll.filter(i => i !== name);
+            localStorage.setItem('myColl', JSON.stringify(coll));
+            showCollection();
         }
 
         function previewImage(e) {
             const r = new FileReader();
-            r.onload = () => { document.getElementById('imagePreview').src = r.result; document.getElementById('preview-container').style.display='block'; };
+            r.onload = () => { 
+                document.getElementById('imagePreview').src = r.result; 
+                document.getElementById('preview-container').style.display='block'; 
+            };
             r.readAsDataURL(e.target.files[0]);
         }
 
-        window.onload = showHistory;
+        window.onload = showCollection;
     </script>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');</script>
 </body>
 </html>
